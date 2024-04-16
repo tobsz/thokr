@@ -22,7 +22,6 @@ use tui::{
     backend::{Backend, CrosstermBackend},
     Frame, Terminal,
 };
-use webbrowser::Browser;
 
 const TICK_RATE_MS: u64 = 100;
 
@@ -198,7 +197,9 @@ fn start_tui<B: Backend>(
                 ThokEvent::Key(key) => {
                     match key.code {
                         KeyCode::Esc => {
-                            break;
+                            if !app.thok.has_finished() {
+                                break;
+                            }
                         }
                         KeyCode::Backspace => {
                             if !app.thok.has_finished() {
@@ -229,18 +230,16 @@ fn start_tui<B: Backend>(
                                     }
                                 }
                                 true => match key.code {
-                                    KeyCode::Char('t') => {
-                                        if Browser::is_available() {
-                                            webbrowser::open(&format!("https://twitter.com/intent/tweet?text={}%20wpm%20%2F%20{}%25%20acc%20%2F%20{:.2}%20sd%0A%0Ahttps%3A%2F%2Fgithub.com%thatvegandev%2Fthokr", app.thok.wpm, app.thok.accuracy, app.thok.std_dev))
-                                    .unwrap_or_default();
-                                        }
+                                    KeyCode::Char('n') => {
+                                        exit_type = ExitType::New;
+                                        break;
                                     }
                                     KeyCode::Char('r') => {
                                         exit_type = ExitType::Restart;
                                         break;
                                     }
-                                    KeyCode::Char('n') => {
-                                        exit_type = ExitType::New;
+                                    KeyCode::Char('q') => {
+                                        exit_type = ExitType::Quit;
                                         break;
                                     }
                                     _ => {}

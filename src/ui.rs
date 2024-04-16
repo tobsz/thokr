@@ -6,7 +6,6 @@ use tui::{
     widgets::{Axis, Chart, Dataset, GraphType, Paragraph, Widget, Wrap},
 };
 use unicode_width::UnicodeWidthStr;
-use webbrowser::Browser;
 
 use crate::thok::{Outcome, Thok};
 
@@ -135,7 +134,7 @@ impl Widget for &Thok {
 
                 for ts in &self.wpm_coords {
                     if ts.1 > highest_wpm {
-                        highest_wpm = ts.1 as f64;
+                        highest_wpm = ts.1;
                     }
                 }
 
@@ -190,11 +189,7 @@ impl Widget for &Thok {
                 stats.render(chunks[1], buf);
 
                 let legend = Paragraph::new(Span::styled(
-                    String::from(if Browser::is_available() {
-                        "(r)etry / (n)ew / (t)weet / (esc)ape"
-                    } else {
-                        "(r)etry / (n)ew / (esc)ape"
-                    }),
+                    String::from("(n)ew / (r)etry / (q)uit"),
                     italic_style,
                 ));
 
